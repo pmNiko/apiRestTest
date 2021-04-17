@@ -22,39 +22,45 @@ export const createProduct = async (req, res) => {
   });
 };
 
-export const generateDataFake = (req, res) => {
-  const categories = ["monitores", "cpu", "teclados", "impresoras", "mouse"];
-
-  let products = [];
+// fn para generar datos falsos a travez de faker
+export const generateDataFake = async (req, res) => {
+  const categories = [
+    "categoria1",
+    "categoria2",
+    "categoria3",
+    "categoria4",
+    "categoria5",
+  ];
 
   for (let i = 0; i < 50; i++) {
     const product = new Product();
+    product.name = faker.commerce.product();
     product.category =
       categories[Math.floor(Math.random() * categories.length)];
-    product.name = faker.commerce.productName();
-    product.price = faker.commerce.price();
+    product.price = faker.finance.amount();
     product.imgURL = faker.image.technics();
     try {
-      const productSaved = product.save();
-      products.push(productSaved);
+      await product.save();
     } catch (error) {
       console.log(error);
     }
   }
-  res.json({ data: products });
+  res.status(201).json({ message: "Data fake insert" });
 };
 
 // get products per page
 export const getProductsPerPage = async (req, res) => {
-  let { limit } = req.query;
+  let { category, limit } = req.query;
+
+  const conditions = category && { category };
 
   const page = parseInt(req.params.number) || 0;
 
-  limit = limit > 0 ? parseInt(limit) : 0;
-  // in the first page the value of the skip is 0
-  const skip = page > 0 ? limit * page - limit : 0; //example 2 * 1 = 2 ; 2-2= 0;
+  limit = limit && limit > 0 ? parseInt(limit) : 0;
 
-  search({ skip, limit, res });
+  const skip = page > 0 ? limit * page - limit : 0; //example 2 * 1 = 2 ; 2-2= 0; // in the first page the value of the skip is 0
+
+  search({ conditions, skip, limit, res });
 };
 
 // fn para obtener productos
