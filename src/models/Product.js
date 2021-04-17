@@ -9,6 +9,10 @@ const productSchema = new Schema(
     category: String,
     price: Number,
     imgURL: String,
+    dataFake: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

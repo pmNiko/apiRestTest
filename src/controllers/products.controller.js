@@ -34,6 +34,8 @@ export const generateDataFake = async (req, res) => {
 
   for (let i = 0; i < 50; i++) {
     const product = new Product();
+
+    product.dataFake = true;
     product.name = faker.commerce.product();
     product.category =
       categories[Math.floor(Math.random() * categories.length)];
@@ -129,7 +131,7 @@ export const deleteProductById = async (req, res) => {
 
 // delete data fake
 export const deleteDataFake = (req, res) => {
-  Product.deleteMany({}, (error, products) => {
+  Product.deleteMany({ dataFake: true }, (error, products) => {
     resServer(res, error, products);
   });
 };
