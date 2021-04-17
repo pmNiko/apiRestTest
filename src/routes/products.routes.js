@@ -12,6 +12,8 @@ router.post(
   productCtrl.createProduct
 );
 
+router.get("/data-fake", productCtrl.generateDataFake);
+
 router.get("/page/:number?", productCtrl.getProductsPerPage);
 
 // fn para obtener producto por ID
@@ -26,6 +28,8 @@ router.put(
   [verifyToken, isAdmin, schema.update],
   productCtrl.updateProductById
 );
+
+router.delete("/delete-data-fake", productCtrl.deleteDataFake);
 
 // fn para borrar productos protect
 router.delete("/:id", [verifyToken, isAdmin], productCtrl.deleteProductById);

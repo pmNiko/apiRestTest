@@ -1,7 +1,8 @@
 /*
   Controller de Products
 */
-
+import faker from "faker";
+faker.locale = "es";
 import Product from "../models/Product";
 
 // fn para crear productos
@@ -19,6 +20,28 @@ export const createProduct = async (req, res) => {
   product.save((error, product) => {
     resServer(res, error, product);
   });
+};
+
+export const generateDataFake = (req, res) => {
+  const categories = ["monitores", "cpu", "teclados", "impresoras", "mouse"];
+
+  let products = [];
+
+  for (let i = 0; i < 50; i++) {
+    const product = new Product();
+    product.category =
+      categories[Math.floor(Math.random() * categories.length)];
+    product.name = faker.commerce.productName();
+    product.price = faker.commerce.price();
+    product.imgURL = faker.image.technics();
+    try {
+      const productSaved = product.save();
+      products.push(productSaved);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  res.json({ data: products });
 };
 
 // get products per page
@@ -95,6 +118,13 @@ export const deleteProductById = async (req, res) => {
     if (!product) return res.status(404).send({ message: "404 not found." });
 
     res.json(true);
+  });
+};
+
+// delete data fake
+export const deleteDataFake = (req, res) => {
+  Product.deleteMany({}, (error, products) => {
+    resServer(res, error, products);
   });
 };
 
