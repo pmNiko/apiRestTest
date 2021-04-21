@@ -32,21 +32,24 @@ export const generateDataFake = async (req, res) => {
     "categoria5",
   ];
 
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 5; i++) {
     const product = new Product();
 
     product.dataFake = true;
+
     product.name = faker.commerce.product();
     product.category =
       categories[Math.floor(Math.random() * categories.length)];
     product.price = faker.finance.amount();
     product.imgURL = faker.image.technics();
+
     try {
       await product.save();
     } catch (error) {
       console.log(error);
     }
   }
+
   res.status(201).json({ message: "Data fake insert" });
 };
 

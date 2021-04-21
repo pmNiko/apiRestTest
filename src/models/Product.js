@@ -6,7 +6,11 @@ import { Schema, model } from "mongoose";
 const productSchema = new Schema(
   {
     name: String,
-    category: String,
+    category: {
+      type: String,
+      default: "Generico",
+      trim: true,
+    },
     price: Number,
     imgURL: String,
     dataFake: {

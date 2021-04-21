@@ -3,9 +3,8 @@
 */
 
 import User from "../models/User";
-import jwt from "jsonwebtoken";
-import config from "../server/config";
 import Role from "../models/Role";
+import * as token from "../libs/token";
 
 // fn de registro de user
 export const signup = async (req, res) => {
@@ -23,7 +22,6 @@ export const signup = async (req, res) => {
       // si nos envian roles find => [{}]  findOne => {}
       const foundRoles = await Role.find({ name: { $in: roles } });
       if (foundRoles <= 0)
-        //aca
         return res.status(422).json({ message: "Roles not found" });
       user.roles = foundRoles.map((role) => role._id);
     } else {
@@ -35,11 +33,9 @@ export const signup = async (req, res) => {
     const saveUser = await user.save();
 
     // creación del token: data - secret - expiresIn
-    const token = jwt.sign({ id: saveUser._id }, config.SECRET, {
-      expiresIn: 86400,
-    });
+    const tokenJwt = token.sign({ id: saveUser._id });
 
-    res.status(201).json({ token });
+    res.status(201).json({ tokenJwt });
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: "user already exists" });
@@ -64,9 +60,7 @@ export const signin = async (req, res) => {
     return res.status(401).json({ message: "Invalid password" });
 
   // creación del token: data - secret - expiresIn
-  const token = jwt.sign({ id: userFound._id }, config.SECRET, {
-    expiresIn: 86400,
-  });
+  const tokenJwt = token.sign({ id: userFound._id });
 
-  res.json({ token });
+  res.json({ tokenJwt });
 };

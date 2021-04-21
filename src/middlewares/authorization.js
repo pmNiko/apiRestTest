@@ -1,19 +1,18 @@
 /*
   Validacion del token
 */
-import config from "../server/config";
-import jwt from "jsonwebtoken";
+import * as token from "../libs/token";
 import User from "../models/User";
 import Role from "../models/Role";
 
 export const verifyToken = async (req, res, next) => {
-  const token = req.headers["x-access-token"];
+  const tokenJwt = req.headers["x-access-token"];
 
-  if (!token) return res.status(403).json({ message: "No token provided." });
+  if (!tokenJwt) return res.status(403).json({ message: "No token provided." });
 
   try {
     // verify token
-    const decoded = jwt.verify(token, config.SECRET);
+    const decoded = token.verify(tokenJwt);
     req.userId = decoded.id; // la vamos a utilizar en los siguientes middle
 
     const user = await User.findById(req.userId, { password: 0 }); //password: 0 para que no lo devuelva
