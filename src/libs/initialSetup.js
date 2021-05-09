@@ -7,18 +7,18 @@ import Role from "../models/Role";
 export const createRoles = async () => {
   try {
     //  comprobación de existencia de roles
-    const count = await Role.estimatedDocumentCount();
+    const roles = await Role.estimatedDocumentCount();
 
-    if (count > 0) return; //corta el proceso
+    if (!roles && process.env.NODE_ENV != "test") {
+      // generamos una promesa multiple para ganar rendimiento
+      const values = await Promise.all([
+        new Role({ name: "user" }).save(),
+        new Role({ name: "moderator" }).save(),
+        new Role({ name: "admin" }).save(),
+      ]);
 
-    // generamos una promesa multiple para ganar rendimiento
-    const values = await Promise.all([
-      new Role({ name: "user" }).save(),
-      new Role({ name: "moderator" }).save(),
-      new Role({ name: "admin" }).save(),
-    ]);
-
-    console.log(values);
+      console.log(values);
+    } //corta el proceso
   } catch (error) {
     console.error(error);
   }

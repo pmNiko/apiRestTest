@@ -1,10 +1,19 @@
-import dotenv from 'dotenv';
-import app from './app';
+import dotenv from "dotenv";
+import app from "./app";
+import { connect } from "./database";
+import { createRoles } from "../libs/initialSetup";
+
+createRoles(); //setup roles
 // recuperación de datos
 const { parsed } = dotenv.config();
 const { SERVER_PORT } = parsed;
 
-// server escuchando en el port 4000
-app.listen(SERVER_PORT);
+// connect database
+connect();
 
-console.log('Server corriendo en el port: ', SERVER_PORT);
+// server escuchando en el port 4000
+const server = app.listen(SERVER_PORT);
+
+console.log("Server corriendo en el port: ", SERVER_PORT);
+
+export { app, server };
